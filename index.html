@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hacker Download Portal</title>
+  <style>
+    :root {
+      --primary: #00ffff;
+      --primary-alt: #9d00ff;
+      --bg1: #0a0014;
+      --bg2: #1a0033;
+      --grid: rgba(157, 0, 255, 0.03);
+    }
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'JetBrains Mono', monospace;
+      background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 50%, var(--bg1) 100%);
+      color: var(--primary);
+      overflow: hidden;
+      transition: background 0.5s;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+    }
+    .grid-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      background-image: linear-gradient(
+        var(--grid) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        90deg,
+        var(--grid) 1px,
+        transparent 1px
+      );
+      background-size: 20px 20px;
+      z-index: 1;
+      transition: background-image 0.5s;
+    }
+    .container {
+      position: relative;
+      z-index: 2;
+      padding: 50px;
+      text-align: center;
+    }
+    h1 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 2.1em;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0;
+      margin-top: 0;
+      border-bottom: none;
+      padding-bottom: 4px;
+      background: none;
+      text-shadow: none;
+      transition: color 0.5s, border-bottom 0.5s;
+      text-align: center;
+      width: 100%;
+    }
+    .terminal-box {
+      background: rgba(10, 0, 20, 0.78);
+      border: 1.5px solid var(--primary);
+      border-radius: 4px;
+      padding: 28px 16px 20px 16px;
+      margin: 0px auto 0 auto;
+      width: 97%;
+      max-width: 440px;
+      box-shadow: none;
+      backdrop-filter: blur(10px) saturate(1.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: background 0.5s, border 0.5s;
+      position: relative;
+      overflow: hidden;
+    }
+    .terminal-box::before {
+      display: none;
+    }
+    .terminal-box p {
+      margin: 0 0 0 0;
+      color: var(--primary);
+      font-size: 1.08em;
+      letter-spacing: 0.01em;
+      z-index: 1;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .terminal-box strong {
+      color: var(--primary-alt);
+      font-weight: 600;
+      z-index: 1;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .download-btn {
+      display: inline-block;
+      margin-top: 18px;
+      padding: 12px 28px;
+      color: var(--primary);
+      background: rgba(10,0,20,0.92);
+      border: 1.5px solid var(--primary);
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 18px;
+      font-family: 'JetBrains Mono', monospace;
+      box-shadow: none;
+      transition: 0.2s, color 0.5s, border 0.5s, background 0.5s;
+      cursor: pointer;
+      z-index: 1;
+      outline: none;
+      letter-spacing: 0.03em;
+    }
+    .download-btn:hover {
+      background: var(--primary);
+      color: #0a0014;
+      border-color: var(--primary-alt);
+    }
+    @media (max-width: 600px) {
+      .container {
+        padding: 8px;
+      }
+      .terminal-box {
+        padding: 10px 2px 8px 2px;
+        font-size: 15px;
+        max-width: 99vw;
+        margin-top: 10px;
+      }
+      h1 {
+        font-size: 1em;
+      }
+      .download-btn {
+        font-size: 15px;
+        padding: 8px 8vw;
+      }
+    }
+    /* Floating color change button */
+    .color-fab {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 100;
+      background: rgba(10,0,20,0.92);
+      color: var(--primary);
+      border: 1.5px solid var(--primary);
+      border-radius: 4px;
+      width: 48px;
+      height: 48px;
+      box-shadow: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s, box-shadow 0.3s, color 0.3s, border 0.3s;
+      outline: none;
+      letter-spacing: 0.04em;
+      user-select: none;
+    }
+    .color-fab:hover {
+      background: var(--primary);
+      color: #0a0014;
+      border-color: var(--primary-alt);
+    }
+  </style>
+</head>
+<body>
+  <canvas id="networkCanvas"></canvas>
+  <div class="grid-overlay"></div>
+  <div class="container">
+    <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+      <h1 style="margin-bottom: 0; margin-top: 0;">HACKER TERMINAL</h1>
+      <div class="terminal-box">
+        <p>Click the button to download <strong>sk-webpage.bat</strong></p>
+        <a href="sk-webpage.bat" download class="download-btn">Download</a>
+      </div>
+    </div>
+  </div>
+  <button class="color-fab" id="colorBtn" title="Change Colors">CLR</button>
+  <script>
+    // --- Network Effect ---
+    const canvas = document.getElementById('networkCanvas');
+    const ctx = canvas.getContext('2d');
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+    let animationId;
+    // Color variables
+    function getVar(name) {
+      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    }
+    // Point class
+    class Point {
+      constructor() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        const angle = Math.random() * 2 * Math.PI;
+        const speed = 0.3 + Math.random() * 0.7;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+      }
+      move() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0 || this.x > width) this.vx *= -1;
+        if (this.y < 0 || this.y > height) this.vy *= -1;
+        this.x = Math.max(0, Math.min(width, this.x));
+        this.y = Math.max(0, Math.min(height, this.y));
+      }
+    }
+    // Create points
+    let points = Array.from({length: 300}, () => new Point());
+    // Mouse
+    let mouse = {x: null, y: null};
+    window.addEventListener('mousemove', e => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+    window.addEventListener('mouseleave', () => {
+      mouse.x = null;
+      mouse.y = null;
+    });
+    // Animation
+    function drawNetwork() {
+      ctx.clearRect(0, 0, width, height);
+      const color = getVar('--primary');
+      // Draw connections
+      for (let i = 0; i < points.length; i++) {
+        for (let j = i + 1; j < points.length; j++) {
+          const dx = points[i].x - points[j].x;
+          const dy = points[i].y - points[j].y;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < 100) {
+            ctx.save();
+            ctx.globalAlpha = 1 - dist/100;
+            ctx.strokeStyle = color;
+            ctx.beginPath();
+            ctx.moveTo(points[i].x, points[i].y);
+            ctx.lineTo(points[j].x, points[j].y);
+            ctx.stroke();
+            ctx.restore();
+          }
+        }
+      }
+      // Draw connections to mouse
+      if (mouse.x !== null && mouse.y !== null) {
+        for (let i = 0; i < points.length; i++) {
+          const dx = points[i].x - mouse.x;
+          const dy = points[i].y - mouse.y;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < 150) {
+            ctx.save();
+            ctx.globalAlpha = 1 - dist/150;
+            ctx.strokeStyle = color;
+            ctx.beginPath();
+            ctx.moveTo(points[i].x, points[i].y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.stroke();
+            ctx.restore();
+          }
+        }
+      }
+      // Draw points
+      for (let p of points) {
+        ctx.save();
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 2.2, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.restore();
+      }
+      // Move points
+      for (let p of points) p.move();
+      animationId = requestAnimationFrame(drawNetwork);
+    }
+    // Handle resize
+    function resize() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+      // Reposition points inside new bounds
+      for (let p of points) {
+        p.x = Math.max(0, Math.min(width, p.x));
+        p.y = Math.max(0, Math.min(height, p.y));
+      }
+    }
+    window.addEventListener('resize', resize);
+    // Cleanup (simulate ngOnDestroy)
+    function cleanupNetwork() {
+      if (animationId) cancelAnimationFrame(animationId);
+    }
+    // Color themes
+    const themes = [
+      {
+        '--primary': '#00ffff',
+        '--primary-alt': '#9d00ff',
+        '--bg1': '#0a0014',
+        '--bg2': '#1a0033',
+        '--grid': 'rgba(157, 0, 255, 0.03)'
+      },
+      {
+        '--primary': '#ff00a6',
+        '--primary-alt': '#00ffb3',
+        '--bg1': '#1a0022',
+        '--bg2': '#33001a',
+        '--grid': 'rgba(0, 255, 179, 0.03)'
+      },
+      {
+        '--primary': '#ffd600',
+        '--primary-alt': '#ff6f00',
+        '--bg1': '#1a1a00',
+        '--bg2': '#332900',
+        '--grid': 'rgba(255, 214, 0, 0.03)'
+      },
+      {
+        '--primary': '#00ff6a',
+        '--primary-alt': '#00b3ff',
+        '--bg1': '#00221a',
+        '--bg2': '#00331a',
+        '--grid': 'rgba(0, 255, 106, 0.03)'
+      }
+    ];
+    let themeIndex = 0;
+    function setTheme(idx) {
+      const theme = themes[idx];
+      for (const key in theme) {
+        document.documentElement.style.setProperty(key, theme[key]);
+      }
+    }
+    document.getElementById('colorBtn').addEventListener('click', () => {
+      themeIndex = (themeIndex + 1) % themes.length;
+      setTheme(themeIndex);
+    });
+    // Initial theme
+    setTheme(themeIndex);
+    // Start animation
+    drawNetwork();
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', cleanupNetwork);
+  </script>
+</body>
+</html>
