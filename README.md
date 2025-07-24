@@ -1,4 +1,4 @@
-# 🖥️ Auto Startup Fullscreen Script Installer
+# 🚀 Fullscreen URL Auto-Launcher (Startup Installer)
 
 This batch file automatically downloads and installs a script (`open_fullscreen.bat`) into the **Windows Startup folder**, allowing it to execute automatically every time the system starts.
 
