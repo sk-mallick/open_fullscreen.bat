@@ -1,52 +1,118 @@
-# 🚀 Fullscreen URL Auto-Launcher (Startup Installer)
+# 🚀 Auto Fullscreen Webpage Launcher (Startup Installer)
 
-This batch file automatically downloads and installs a script (`open_fullscreen.bat`) into the **Windows Startup folder**, allowing it to execute automatically every time the system starts.
+This project provides a Windows batch script (`sk-webpage.bat`) that downloads and installs another script (`open_fullscreen.bat`) into the user's **Startup folder**, enabling a specific webpage to automatically open in fullscreen mode every time the system starts.
 
 ---
 
-## 📁 File: `install_fullscreen.bat`
+## 📁 File: `sk-webpage.bat`
 
 ### 🔧 What it does:
-- Connects to a GitHub-hosted `.bat` script.
-- Downloads the script to the user's **Startup** folder.
-- Hides the script for stealth execution.
-- Executes the script automatically every time the system boots.
-- **Deletes itself** permanently after installation.
+
+- Downloads a `.bat` script (`open_fullscreen.bat`) from your GitHub repository.
+- Moves the script into the Windows **Startup** folder.
+- Hides the script so it runs silently.
+- Automatically opens a **specified webpage in fullscreen mode** on system startup.
+- Deletes itself after installation to ensure stealth and simplicity.
 
 ---
 
-## 📌 Script Breakdown:
+## 📂 Startup File Location:
 
-| Section         | Description                                                  |
-|----------------|--------------------------------------------------------------|
-| ASCII Header    | Displays a styled header using Unicode characters.          |
-| GitHub Download | Pulls the `open_fullscreen.bat` from the provided repository.|
-| Startup Logic   | Places the file in `%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup`. |
-| File Security   | Hides the script using `attrib +h`.                          |
-| Cleanup         | Uses PowerShell to **self-delete** the installer script.     |
+The script is placed in:
+
+```
+%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup
+```
+
+This ensures the webpage will open every time Windows boots.
+
+---
+
+## 🌐 Webpage to Open:
+
+The webpage that opens on startup is defined inside `open_fullscreen.bat`. You can customize this by editing the following line inside that file:
+
+```batch
+start chrome --start-fullscreen https://example.com
+```
+
+Replace `https://example.com` with your desired URL.
 
 ---
 
 ## 🛠 Requirements:
-- Windows OS
-- Internet connection to download the script
-- GitHub availability (script is hosted on GitHub)
+
+- 🪟 Windows 10/11
+- 🌐 Internet connection (for initial download)
+- ✅ Google Chrome installed (or modify to use a different browser)
 
 ---
 
-## 📦 Remote Script:
-The script downloaded and auto-started is hosted at:
+## 📥 Installation via PowerShell (One-Liner)
+
+To download and run the batch installer directly, open **PowerShell** and paste the following command:
+
+```powershell
+iwr https://raw.githubusercontent.com/sk-mallick/open_fullscreen.bat/main/sk-webpage.bat -OutFile "$env:TEMP\a.bat"; Start-Process "$env:TEMP\a.bat"
 ```
-https://raw.githubusercontent.com/sk-mallick/open_fullscreen.bat/main/open_fullscreen.bat
-```
+
+This:
+- Downloads `sk-webpage.bat` from GitHub
+- Executes it immediately
+- Installs `open_fullscreen.bat` into Startup
+- Deletes the installer script
 
 ---
 
-## 🛡️ Security Note:
-- This installer **automatically deletes itself** after the setup.
-- The downloaded script is **hidden** in the Startup folder.
+## 📌 Script Summary
+
+| Feature               | Description                                                                 |
+|-----------------------|-----------------------------------------------------------------------------|
+| 🚀 Auto Startup        | Adds a script to launch a webpage on every system boot.                     |
+| 🎯 Fullscreen Launch   | Launches in fullscreen mode using Chrome's `--start-fullscreen` flag.       |
+| 🧹 Self-Deleting       | The installer script deletes itself after running to stay clean.            |
+| 🕵️ Hidden Script       | Sets the installed `.bat` file as hidden to avoid clutter.                 |
 
 ---
 
-## ⚠️ Disclaimer:
-This script modifies the user's Startup behavior. Please ensure you trust the downloaded script (`open_fullscreen.bat`) before running this installer.
+## 🛡️ Security Warning
+
+This script modifies your **Startup folder**, which affects system boot behavior.  
+Make sure you trust the script and understand what it’s doing before installing.
+
+---
+
+## 🧼 Uninstall Instructions
+
+1. Press `Win + R`, type:  
+   ```
+   %APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup
+   ```
+2. Delete the file named `open_fullscreen.bat`.
+
+---
+
+## 📂 GitHub Repository
+
+All files are hosted at:  
+[https://github.com/sk-mallick/open_fullscreen.bat](https://github.com/sk-mallick/open_fullscreen.bat)
+
+---
+
+## 📃 License
+
+This project is free to use and modify. No license restrictions apply.
+
+---
+
+## ⚠️ Disclaimer
+
+This script is provided for **educational and automation purposes only**.  
+By using this script, you acknowledge that:
+
+- You understand it modifies the Windows **Startup folder**.
+- You are responsible for any changes or impacts this script may have on your system.
+- The author is **not liable** for any damages, data loss, or unexpected behavior caused by running or modifying this script.
+- Always review scripts before executing them on your machine, especially those that affect startup behavior.
+
+Use responsibly and only on systems you own or have permission to modify.
